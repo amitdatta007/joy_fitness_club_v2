@@ -13,12 +13,12 @@ const AddMemberModel = () => {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button size='sm'>Add Member</Button>
+                <Button size='sm'>Add Membership</Button>
             </DialogTrigger>
-            <DialogContent size="3xl">
+            <DialogContent size="3xl" className="">
                 <DialogHeader>
                     <DialogTitle className="text-xl font-semibold text-default-700">
-                        Enter Member Details
+                        Enter Membership Details
                     </DialogTitle>
                 </DialogHeader>
                 <AddMemberForm closeModal={closeModal} />

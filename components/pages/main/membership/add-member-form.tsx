@@ -1,6 +1,7 @@
 "use client"
 
 import { addMember, getMembers } from "@/actions/memberAction";
+import { addMembership } from "@/actions/membershipAction";
 import { addProduct } from "@/actions/productAction";
 import DatePicker from "@/components/date-picker";
 import DatePickerWithRange from "@/components/date-picker-with-range";
@@ -21,15 +22,9 @@ import { Check, ChevronsUpDown } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
-type FieldError = { message: string };
-type FormErrors = {
-    name?: { message: string };
-    size?: { message: string };
-    cost?: { message: string };
-    price?: { message: string };
-    description?: { message: string };
-};
+
 
 // const AddMemberForm = ({ closeModal }: { closeModal: () => void; }) => {
 //     const [isPending, startTransition] = useTransition();
@@ -354,186 +349,207 @@ const AddMemberForm = ({ closeModal }: { closeModal: () => void }) => {
 
     const onSubmit = (data: MembershipSchemaType) => {
         startTransition(async () => {
-            console.log("Submitting", data);
-            // API call here...
+
+            const result = await addMembership(data);
+
+
+
+            if (!result?.status && result?.message) {
+                toast.error(result.message);
+                return;
+            }
+
+            if (result.status && result.message) {
+                toast.success(result.message);
+                reset();
+                closeModal();
+            }
         });
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-5">
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-2 ">
 
-            {/* Member ID */}
-            <div>
-                <Label htmlFor="member_id" className="mb-2">Member <span className="text-warning">*</span></Label>
-                <Controller
-                    name="member_id"
-                    control={control}
-                    render={({ field }) => (
-                        <Popover open={open} onOpenChange={setOpen}>
-                            <PopoverTrigger asChild className="w-full z-[999999]">
-                                <Button variant="outline" role="combobox" aria-expanded={open} className={cn("justify-between border-default-300 text-default-500 focus:outline-none focus:border-primary disabled:bg-default-200  placeholder:text-accent-foreground/50 font-normal", errors.member_id && "border-destructive" )}>
-                                    {field.value
-                                        ? `${members.find(m => m.id === field.value)?.name} - ${members.find(m => m.id === field.value)?.membership_id}`
-                                        : "Select Member..."}
-                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-[--radix-popover-trigger-width] p-0 z-[999999]">
-                                <Command>
-                                    <CommandInput placeholder="Search member..." />
-                                    <CommandEmpty>No member found.</CommandEmpty>
-                                    <CommandGroup>
-                                        {members.map((member) => (
-                                            <CommandItem
-                                                key={member.id}
-                                                onSelect={() => {
-                                                    field.onChange(member.id);
-                                                    setOpen(false);
-                                                }}
-                                            >
-                                                <Check
-                                                    className={cn("mr-2 h-4 w-4", field.value === member.id ? "opacity-100" : "opacity-0")}
-                                                />
-                                                {member.name} - {member.membership_id}
-                                            </CommandItem>
-                                        ))}
-                                    </CommandGroup>
-                                </Command>
-                            </PopoverContent>
-                        </Popover>
-                    )}
-                />
-                {errors.member_id && <p className="text-xs text-destructive mt-2">{errors.member_id.message}</p>}
+            <div className="h-[560px] md:h-fit  w-full mb-4">
+                <ScrollArea className="h-full">
+                    <div className="h-[250px] md:h-fit grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-5">
+                        {/* Member ID */}
+                        <div>
+                            <Label htmlFor="member_id" className="mb-2">Member <span className="text-warning">*</span></Label>
+                            <Controller
+                                name="member_id"
+                                control={control}
+                                render={({ field }) => (
+                                    <Popover open={open} onOpenChange={setOpen}>
+                                        <PopoverTrigger asChild className="w-full z-[999999]">
+                                            <Button variant="outline" role="combobox" aria-expanded={open} className={cn("justify-between border-default-300 text-default-500 focus:outline-none focus:border-primary disabled:bg-default-200  placeholder:text-accent-foreground/50 font-normal", errors.member_id && "border-destructive")}>
+                                                {field.value
+                                                    ? `${members.find(m => m.id === field.value)?.name} - ${members.find(m => m.id === field.value)?.membership_id}`
+                                                    : "Select Member..."}
+                                                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0 z-[999999]">
+                                            <Command>
+                                                <CommandInput placeholder="Search member..." />
+                                                <CommandEmpty>No member found.</CommandEmpty>
+                                                <CommandGroup>
+                                                    {members.map((member) => (
+                                                        <CommandItem
+                                                            key={member.id}
+                                                            onSelect={() => {
+                                                                field.onChange(member.id);
+                                                                setOpen(false);
+                                                            }}
+                                                        >
+                                                            <Check
+                                                                className={cn("mr-2 h-4 w-4", field.value === member.id ? "opacity-100" : "opacity-0")}
+                                                            />
+                                                            {member.name} - {member.membership_id}
+                                                        </CommandItem>
+                                                    ))}
+                                                </CommandGroup>
+                                            </Command>
+                                        </PopoverContent>
+                                    </Popover>
+                                )}
+                            />
+                            {errors.member_id && <p className="text-xs text-destructive mt-2">{errors.member_id.message}</p>}
+                        </div>
+
+                        {/* Start Date */}
+                        <div>
+                            <div>
+                                <Label className="mb-2" htmlFor="date_of_birth">Start Date </Label>
+                                <DatePicker
+                                    id="start_date"
+                                    size="lg"
+                                    disabled={isPending}
+                                    hasRegister={true}
+                                    register={register}
+                                    fieldName="start_date"
+                                    className={cn("peer text-start", {
+                                        "border-destructive": errors.start_date,
+                                    })}
+                                />
+
+                            </div>
+                            {errors.start_date && (
+                                <div className="text-xs text-destructive mt-2">{errors.start_date.message}</div>
+                            )}
+                        </div>
+
+                        {/* Amount */}
+                        <div>
+                            <Label htmlFor="amount" className="mb-2">Amount <span className="text-warning">*</span></Label>
+                            <Input
+                                size='lg'
+                                type="number"
+                                id="amount"
+                                placeholder="Enter Amount"
+                                disabled={isPending}
+                                {...register("amount", { valueAsNumber: true })}
+                                className={cn("peer", { "border-destructive": errors.amount })}
+                            />
+                            {errors.amount && <p className="text-xs text-destructive mt-2">{errors.amount.message}</p>}
+                        </div>
+
+                        {/* Discount */}
+                        <div>
+                            <Label htmlFor="discount" className="mb-2">Discount</Label>
+                            <Input
+                                size='lg'
+                                type="number"
+                                id="discount"
+                                placeholder="Enter Discount"
+                                disabled={isPending}
+                                {...register("discount", { valueAsNumber: true })}
+                                className={cn("peer", { "border-destructive": errors.discount })}
+                            />
+                            {errors.discount && <p className="text-xs text-destructive mt-2">{errors.discount.message}</p>}
+                        </div>
+
+                        <div>
+                            <div>
+                                <Label className="mb-2" htmlFor="paid_status">Paid Status <span className="text-warning">*</span></Label>
+
+                                <Controller
+                                    name="paid_status"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Select value={field.value} onValueChange={field.onChange} disabled={isPending}>
+                                            <SelectTrigger id="paid_status" className={cn("peer", {
+                                                "border-destructive": errors.paid_status,
+                                            })}>
+                                                <SelectValue placeholder="Select Paid Status" />
+                                            </SelectTrigger>
+                                            <SelectContent className="z-[9999]" {...register('paid_status')}>
+                                                <SelectItem value="unpaid">Unpaid</SelectItem>
+                                                <SelectItem value="paid">Paid</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    )}
+                                />
+
+                            </div>
+                            {errors.paid_status && (
+                                <div className="text-xs text-destructive mt-2">{errors.paid_status.message}</div>
+                            )}
+                        </div>
+
+                        <div>
+                            <div>
+                                <Label className="mb-2" htmlFor="payment_method">Payment Method </Label>
+
+                                <Controller
+                                    name="payment_method"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Select value={field.value} onValueChange={field.onChange} disabled={isPending}>
+                                            <SelectTrigger id="payment_method" className={cn("peer", {
+                                                "border-destructive": errors.payment_method,
+                                            })}>
+                                                <SelectValue placeholder="Select Payment Method" />
+                                            </SelectTrigger>
+                                            <SelectContent className="z-[9999]" {...register('payment_method')}>
+                                                <SelectItem value="cash">Cash</SelectItem>
+                                                <SelectItem value="bkash">Bkash</SelectItem>
+                                                <SelectItem value="nagad">Nagad</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    )}
+                                />
+
+                            </div>
+                            {errors.payment_method && (
+                                <div className="text-xs text-destructive mt-2">{errors.payment_method.message}</div>
+                            )}
+                        </div>
+
+
+                        <div className="md:col-span-2">
+                            <div>
+                                <Label className="mb-2" htmlFor="note">Note</Label>
+                                <Textarea
+                                    id="note"
+                                    placeholder="Note"
+                                    disabled={isPending}
+                                    {...register("note")}
+                                    className={cn("peer", {
+                                        "border-destructive": errors.note,
+                                    })}
+                                    rows={1}
+                                />
+                            </div>
+                            {errors.note && (
+                                <div className="text-xs text-destructive mt-2">{errors.note.message}</div>
+                            )}
+                        </div>
+                    </div>
+                </ScrollArea>
             </div>
 
-            {/* Start Date */}
-            <div>
-                <div>
-                    <Label className="mb-2" htmlFor="date_of_birth">Start Date </Label>
-                    <DatePicker
-                        id="start_date"
-                        size="lg"
-                        disabled={isPending}
-                        hasRegister={true}
-                        register={register}
-                        fieldName="start_date"
-                        className={cn("peer text-start", {
-                            "border-destructive": errors.start_date,
-                        })}
-                    />
 
-                </div>
-                {errors.start_date && (
-                    <div className="text-xs text-destructive mt-2">{errors.start_date.message}</div>
-                )}
-            </div>
-
-            {/* Amount */}
-            <div>
-                <Label htmlFor="amount" className="mb-2">Amount <span className="text-warning">*</span></Label>
-                <Input
-                    size='lg'
-                    type="number"
-                    id="amount"
-                    placeholder="Enter Amount"
-                    disabled={isPending}
-                    {...register("amount", { valueAsNumber: true })}
-                    className={cn("peer", { "border-destructive": errors.amount })}
-                />
-                {errors.amount && <p className="text-xs text-destructive mt-2">{errors.amount.message}</p>}
-            </div>
-
-            {/* Discount */}
-            <div>
-                <Label htmlFor="discount" className="mb-2">Discount</Label>
-                <Input
-                    size='lg'
-                    type="number"
-                    id="discount"
-                    placeholder="Enter Discount"
-                    disabled={isPending}
-                    {...register("discount", { valueAsNumber: true })}
-                    className={cn("peer", { "border-destructive": errors.discount })}
-                />
-                {errors.discount && <p className="text-xs text-destructive mt-2">{errors.discount.message}</p>}
-            </div>
-
-            <div>
-                <div>
-                    <Label className="mb-2" htmlFor="paid_status">Paid Status <span className="text-warning">*</span></Label>
-
-                    <Controller
-                        name="paid_status"
-                        control={control}
-                        render={({ field }) => (
-                            <Select value={field.value} onValueChange={field.onChange} disabled={isPending}>
-                                <SelectTrigger id="paid_status" className={cn("peer", {
-                                    "border-destructive": errors.paid_status,
-                                })}>
-                                    <SelectValue placeholder="Select Paid Status" />
-                                </SelectTrigger>
-                                <SelectContent className="z-[9999]" {...register('paid_status')}>
-                                    <SelectItem value="unpaid">Unpaid</SelectItem>
-                                    <SelectItem value="paid">Paid</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        )}
-                    />
-
-                </div>
-                {errors.paid_status && (
-                    <div className="text-xs text-destructive mt-2">{errors.paid_status.message}</div>
-                )}
-            </div>
-
-            <div>
-                <div>
-                    <Label className="mb-2" htmlFor="payment_method">Payment Method </Label>
-
-                    <Controller
-                        name="payment_method"
-                        control={control}
-                        render={({ field }) => (
-                            <Select value={field.value} onValueChange={field.onChange} disabled={isPending}>
-                                <SelectTrigger id="payment_method" className={cn("peer", {
-                                    "border-destructive": errors.payment_method,
-                                })}>
-                                    <SelectValue placeholder="Select Payment Method" />
-                                </SelectTrigger>
-                                <SelectContent className="z-[9999]" {...register('payment_method')}>
-                                    <SelectItem value="cash">Cash</SelectItem>
-                                    <SelectItem value="bkash">Bkash</SelectItem>
-                                    <SelectItem value="nagad">Nagad</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        )}
-                    />
-
-                </div>
-                {errors.payment_method && (
-                    <div className="text-xs text-destructive mt-2">{errors.payment_method.message}</div>
-                )}
-            </div>
-
-
-            <div className="md:col-span-2">
-                <div>
-                    <Label className="mb-2" htmlFor="note">Note</Label>
-                    <Textarea
-                        id="note"
-                        placeholder="Note"
-                        disabled={isPending}
-                        {...register("note")}
-                        className={cn("peer", {
-                            "border-destructive": errors.note,
-                        })}
-                        rows={1}
-                    />
-                </div>
-                {errors.note && (
-                    <div className="text-xs text-destructive mt-2">{errors.note.message}</div>
-                )}
-            </div>
 
             {/* Actions */}
             <DialogFooter className="md:col-span-2">

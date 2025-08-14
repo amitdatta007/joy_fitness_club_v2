@@ -7,18 +7,10 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
 import { ColumnDef } from "@tanstack/react-table";
-import { MembersTableMeta } from "@/types";
+import { MembershipTableMeta } from "@/types";
 import { format, parseISO } from 'date-fns';
 import { MembershipFeeWithMemberType } from "@/actions/membershipAction";
 
-interface Member {
-  name: string;
-  membership_id: number;
-  phone: number;
-  blood_group: string;
-  joining_date: string;
-  status: any;
-}
 
 
 
@@ -150,7 +142,9 @@ export const columns: ColumnDef<MembershipFeeWithMemberType>[] = [
       return (
         <div className="flex gap-2">
           <span className="max-w-[200px] truncate font-medium">
-            {format(parseISO(row.getValue("paid_date")), 'dd MMM yyyy')}
+            {
+              row.getValue("paid_date") ? format(parseISO(row.getValue("paid_date")), 'dd MMM yyyy') : ""
+            }
           </span>
         </div>
       );
@@ -162,7 +156,7 @@ export const columns: ColumnDef<MembershipFeeWithMemberType>[] = [
       <DataTableColumnHeader column={column} title="Actions" className="text-primary" />
     ),
     cell: ({ row, table }) => {
-      const { setEditModalIsOpen, setSelectedRow, setDeleteModalIsOpen } = table.options.meta as MembersTableMeta;
+      const { setEditModalIsOpen, setSelectedRow, setDeleteModalIsOpen } = table.options.meta as MembershipTableMeta;
 
       return (
         <DataTableRowActions

@@ -6,7 +6,6 @@ import {
   DashBoard, Graph, Note2, Note3, Stacks, Stacks2, Users, Settings
 
 } from "@/components/svg";
-import { Box } from "lucide-react";
 
 
 export interface MenuItemProps {
@@ -39,6 +38,7 @@ export const menusConfig: MenuItemProps[] = [
       {
         title: "New Members",
         href: "/members/new",
+        
       },
       {
         title: "All Members",
@@ -68,20 +68,6 @@ export const menusConfig: MenuItemProps[] = [
   },
   {
     title: "Memberships",
-    icon: Users,
-    child: [
-      {
-        title: "Active Membership",
-        href: "/membership/active",
-      },
-      {
-        title: "All Membership",
-        href: "/membership",
-      },
-    ],
-  },
-  {
-    title: "Reports",
     icon: Users,
     child: [
       {

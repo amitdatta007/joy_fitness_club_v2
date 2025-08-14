@@ -28,19 +28,18 @@ import {
 import { DataTablePagination } from "./data-table-pagination";
 import { DataTableToolbar } from "./data-table-toolbar";
 import { useEffect, useState } from "react";
-import { MemberSchemaType } from "@/schema/member.schema";
-import { MembersTableMeta, TableMeta } from "@/types";
+import { MembershipTableMeta, MembersTableMeta, TableMeta } from "@/types";
 import EditMemberModal from "../edit-member-modal";
 import DeleteMemberModal from "../delete-member-modal";
 // import EditProductModal from "../edit-product-modal";
 
-interface DataTableProps<MemberSchemaType> {
-  columns: ColumnDef<MemberSchemaType>[];
-  data: MemberSchemaType[];
+interface DataTableProps<MembershipFeeWithMemberType> {
+  columns: ColumnDef<MembershipFeeWithMemberType>[];
+  data: MembershipFeeWithMemberType[];
 }
 
 
-export function DataTable<MemberSchemaType>({ columns, data }: DataTableProps<MemberSchemaType>) {
+export function DataTable<MembershipFeeWithMemberType>({ columns, data }: DataTableProps<MembershipFeeWithMemberType>) {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -75,7 +74,7 @@ export function DataTable<MemberSchemaType>({ columns, data }: DataTableProps<Me
       setSelectedRow,
       setEditModalIsOpen,
       setDeleteModalIsOpen
-    } as MembersTableMeta,
+    } as MembershipTableMeta,
     enableRowSelection: true,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -158,14 +157,14 @@ export function DataTable<MemberSchemaType>({ columns, data }: DataTableProps<Me
         <EditMemberModal
           open={editModalIsOpen}
           setOpen={setEditModalIsOpen}
-          member={selectedRow}
+          membership={selectedRow}
         />
       )}
       {selectedRow?.id && (
         <DeleteMemberModal
           open={deleteModalIsOpen}
           setOpen={setDeleteModalIsOpen}
-          member={selectedRow}
+          membership={selectedRow}
         />
       )}
     </>

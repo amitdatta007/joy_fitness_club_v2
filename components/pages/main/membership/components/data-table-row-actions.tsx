@@ -10,21 +10,21 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MembersTableMeta } from "@/types";
-import { MemberSchemaType } from "@/schema/member.schema";
+import { MembershipTableMeta } from "@/types";
+import { MembershipFeeWithMemberType } from "@/actions/membershipAction";
 
 
-interface DataTableRowActionsProps extends MembersTableMeta {
+interface DataTableRowActionsProps extends MembershipTableMeta {
   row: Row<any>;
 }
 
 export function DataTableRowActions({ row, setEditModalIsOpen, setDeleteModalIsOpen, setSelectedRow }: DataTableRowActionsProps) {
   const openEditModal = () => {
-    setSelectedRow(() => row.original as MemberSchemaType)
+    setSelectedRow(() => row.original as MembershipFeeWithMemberType)
     setEditModalIsOpen((state) => !state)
   }
   const openDeleteModal = () => {
-    setSelectedRow(() => row.original as MemberSchemaType)
+    setSelectedRow(() => row.original as MembershipFeeWithMemberType)
     setDeleteModalIsOpen((state) => !state)
   }
 

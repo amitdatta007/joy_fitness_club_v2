@@ -1,3 +1,4 @@
+import { MembershipFeeWithMemberType } from "@/actions/membershipAction";
 import { MemberSchemaType } from "@/schema/member.schema";
 import { ProductSchemaType } from "@/schema/product.schema";
 
@@ -15,4 +16,9 @@ export interface MembersTableMeta {
     setEditModalIsOpen: React.Dispatch<React.SetStateAction<boolean>>; // Replace `any` with your specific row type if you have one
     setDeleteModalIsOpen: React.Dispatch<React.SetStateAction<boolean>>; // Replace `any` with your specific row type if you have one
     setSelectedRow: React.Dispatch<React.SetStateAction<MemberSchemaType>>;
+}
+export interface MembershipTableMeta {
+    setEditModalIsOpen: React.Dispatch<React.SetStateAction<boolean>>; // Replace `any` with your specific row type if you have one
+    setDeleteModalIsOpen: React.Dispatch<React.SetStateAction<boolean>>; // Replace `any` with your specific row type if you have one
+    setSelectedRow: React.Dispatch<React.SetStateAction<MembershipFeeWithMemberType>>;
 }

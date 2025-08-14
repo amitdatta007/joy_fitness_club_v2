@@ -6,7 +6,9 @@ import { revalidatePath } from "next/cache";
 
 export const getMembers = async (status?: string): Promise<MemberSchemaType[]> => {
     try {
-        const res = status ? await fetch(`${process.env.NEXT_PUBLIC_API}/members?status=${status},`) : await fetch(`${process.env.NEXT_PUBLIC_API}/members`);
+        const res = status ? await fetch(`${process.env.NEXT_PUBLIC_API}/members?status=${status},`) : await fetch(`${process.env.NEXT_PUBLIC_API}/members`, {
+            cache: "no-cache"
+        });
 
         const { members } = await res.json();
 
@@ -18,7 +20,11 @@ export const getMembers = async (status?: string): Promise<MemberSchemaType[]> =
 export const getMonthlyMembers = async (yearMonth?: string): Promise<MemberSchemaType[]> => {
     try {
 
-        const res = yearMonth ? await fetch(`${process.env.NEXT_PUBLIC_API}/members/monthly-joining?year_month=${yearMonth}`) : await fetch(`${process.env.NEXT_PUBLIC_API}/members/monthly-joining`);
+        const res = yearMonth ? await fetch(`${process.env.NEXT_PUBLIC_API}/members/monthly-joining?year_month=${yearMonth}`, {
+            cache: "no-cache"
+        }) : await fetch(`${process.env.NEXT_PUBLIC_API}/members/monthly-joining`, {
+            cache: "no-cache"
+        });
         const { members } = await res.json();
 
         return members;
